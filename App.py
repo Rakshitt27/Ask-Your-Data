@@ -524,14 +524,15 @@ def render_sidebar():
             try:
                 client = GeminiClient(api_key)
                 # Quick validation ping
-                test = client.ask("Reply with the single word: READY")
+                test = client.ask("Reply with exactly this word: READY")
+
+                if test and "READY" in test.upper():
                     st.session_state.gemini = client
                     st.session_state.api_configured = True
                     st.success("✅ API Connected!")
                 else:
-                    st.warning("⚠️ API responded but validation unclear.")
-                    st.session_state.gemini = client
-                    st.session_state.api_configured = True
+                    st.session_state.api_configured = False
+                    st.error("❌ API validation failed. Please check your API key.")
             except Exception as e:
                 st.error(f"❌ API Error: {str(e)[:80]}")
                 st.session_state.api_configured = False
@@ -886,5 +887,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
