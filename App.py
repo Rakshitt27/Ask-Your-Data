@@ -290,44 +290,61 @@ class AnalyticsEngine:
         return "\n".join(parts)
 
     def answer_question(self, question: str) -> dict:
-        """
-        Main entry: takes a natural language question, returns:
-        {
-          "answer": str,
-          "code": str | None,
-          "chart_type": str | None,
-          "chart_config": dict | None,
-          "table": pd.DataFrame | None,
-          "insight": str | None,
-          "sql_like": str | None,
-        }
-        """
-        context = self._build_context()
+    """
+    Simplified stable answer function for Streamlit Cloud.
+    No forced JSON. No fragile parsing.
+    """
+
+        context_parts = []
+
+        for name, df in self.datasets.items():
+            context_parts.append(
+                f"Dataset: {name}\n"
+                f"Shape: {df.shape}\n"
+                f"Columns: {list(df.columns)}\n"
+            )
+
+        context = "\n\n".join(context_parts)
 
         prompt = f"""
-{context}
+    You are an expert data analyst.
 
-USER QUESTION: {question}
+    Here are the available datasets:
 
-You are a precise data analyst. Answer the question using the datasets above.
+    {context}
 
-RULES:
-1. Be highly accurate — double-check any math.
-2. If the question requires computation, provide Python pandas code (no imports needed, DataFrames are already loaded as variables matching their names without spaces and special chars replaced with underscores).
-3. Format your response as a valid JSON object with these keys:
-   - "answer": (string) Clear, complete answer in plain English.
-   - "insight": (string) 1-2 sentence key takeaway or business implication.
-   - "code": (string or null) Pandas Python code to compute the result. Variable names match dataset names (spaces→underscore, special chars removed). Use `result_df` for tabular output, `result_value` for scalar.
-   - "chart_type": (string or null) One of: "bar", "line", "scatter", "pie", "histogram", "box", "heatmap", "treemap", null
-   - "chart_config": (object or null) Dict with keys: x, y, color, title, labels — matching column names in the dataset.
-   - "dataset_ref": (string or null) Name of primary dataset used.
-   - "sql_like": (string or null) SQL-like pseudo-query representing the analysis.
+    User question:
+    {question}
 
-Return ONLY the JSON object, no markdown fences.
-"""
+    Answer clearly and concisely in plain English.
+    If calculations are needed, explain the logic.
+    """
 
-        raw = self.client.ask(prompt)
-        return self._parse_response(raw, question)
+        try:
+            response = self.client.ask(prompt)
+
+            return {
+                "answer": response,
+                "insight": None,
+                "code": None,
+                "chart_type": None,
+                "chart_config": None,
+                "dataset_ref": None,
+                "sql_like": None,
+                "table": None
+            }
+
+        except Exception as e:
+            return {
+                "answer": f"Error generating response: {str(e)}",
+                "insight": None,
+                "code": None,
+                "chart_type": None,
+                "chart_config": None,
+                "dataset_ref": None,
+                "sql_like": None,
+                "table": None
+            }
 
     def _parse_response(self, raw: str, question: str) -> dict:
         """Extract JSON from Gemini's response, execute code safely."""
@@ -888,6 +905,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
