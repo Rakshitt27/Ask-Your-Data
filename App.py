@@ -525,7 +525,6 @@ def render_sidebar():
                 client = GeminiClient(api_key)
                 # Quick validation ping
                 test = client.ask("Reply with the single word: READY")
-            
                     st.session_state.gemini = client
                     st.session_state.api_configured = True
                     st.success("✅ API Connected!")
@@ -887,4 +886,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
