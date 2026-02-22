@@ -109,7 +109,7 @@ st.markdown("""
 class GeminiClient:
     """Wrapper around Google Gemini with smart retry + prompt engineering."""
 
-    MODEL = "gemini-1.5-pro"
+    MODEL = "gemini-1.5-flash"
 
     def __init__(self, api_key: str):
         genai.configure(api_key=api_key)
@@ -892,6 +892,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
