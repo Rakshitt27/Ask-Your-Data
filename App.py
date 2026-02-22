@@ -80,7 +80,7 @@ st.markdown("""
 class GeminiClient:
     """Thin wrapper around Gemini 1.5 Flash with low-temperature config."""
 
-    MODEL = "gemini-1.5-flash"
+    MODEL = "gemini-2.0-flash"
 
     def __init__(self, api_key: str):
         genai.configure(api_key=api_key)
@@ -834,3 +834,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
