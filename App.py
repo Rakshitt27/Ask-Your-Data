@@ -519,20 +519,16 @@ def render_sidebar():
         st.markdown("### 🔑 Google Gemini API Key")
         api_key = st.text_input(
             "Enter API Key",
-            type="password",
-            placeholder="AIza...",
-            help="Get your key at ai.google.dev"
+            type="password"
         )
 
         if api_key:
             try:
-                # Initialize client
                 client = GeminiClient(api_key)
 
-                # Make a very small test call
-                response = client.model.generate_content("Hi")
+                # Simple test call
+                client.ask("Hi")
 
-                # If no exception → API works
                 st.session_state.gemini = client
                 st.session_state.api_configured = True
                 st.success("✅ API Connected!")
@@ -540,7 +536,7 @@ def render_sidebar():
             except Exception as e:
                 st.session_state.api_configured = False
                 st.error("❌ Invalid API Key or quota exceeded.")
-                st.caption(str(e)[:150])
+                st.caption(str(e)[:200])
 
         st.markdown("---")
 
@@ -892,6 +888,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
