@@ -1,4 +1,4 @@
-"""
+    """
 ╔══════════════════════════════════════════════════════════════════╗
 ║          AI ANALYTICS ASSISTANT - "Ask Your Data"               ║
 ║              Powered by Google Gemini API                        ║
@@ -290,10 +290,10 @@ class AnalyticsEngine:
         return "\n".join(parts)
 
     def answer_question(self, question: str) -> dict:
-    """
-    Simplified stable answer function for Streamlit Cloud.
-    No forced JSON. No fragile parsing.
-    """
+        """
+        Simplified stable answer function for Streamlit Cloud.
+        No forced JSON. No fragile parsing.
+        """
 
         context_parts = []
 
@@ -905,6 +905,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
